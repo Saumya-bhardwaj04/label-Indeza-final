@@ -1,26 +1,1783 @@
-@import "tailwindcss";
+@import "../styles/site.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Hide browser scrollbar while maintaining scrolling functionality */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html,
+body {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ========================================================
+   BUG FIX 1: Hero Image/Video Scaling on Large Screens
+   ======================================================== */
+
+/* Hero section — always full viewport, never overflow */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 560px;
+  max-height: 900px;
+  /* ← CAP maximum height on ultra-wide screens */
+  overflow: hidden;
+}
+
+/* Hero background image */
+.hero-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  /* keep face/subject visible */
+  z-index: 0;
+}
+
+/* Hero background video */
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 0;
+}
+
+/* Overlay */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right,
+      rgba(0, 0, 0, 0.50) 0%,
+      rgba(0, 0, 0, 0.20) 50%,
+      transparent 100%);
+  z-index: 1;
+}
+
+/* Hero content — always vertically centered */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-top: 64px;
+  /* navbar height */
+}
+
+/* Hero text — constrain width so it never spreads across full screen */
+.hero-text {
+  max-width: 600px;
+}
+
+/* Hero title — fluid but capped */
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5.5vw, 76px);
+  font-weight: 500;
+  line-height: 1.05;
+  color: #DECBA7;
+}
+
+/* Responsive — tablet */
+@media (max-width: 1199px) {
+  .hero {
+    max-height: 700px;
+  }
+
+  .hero-title {
+    font-size: clamp(32px, 5vw, 56px);
+  }
+}
+
+/* Responsive — mobile */
+@media (max-width: 768px) {
+  .hero {
+    height: 100dvh !important;
+    max-height: none !important;
+    min-height: 560px !important;
+  }
+
+  .hero-image,
+  .hero-video {
+    object-position: center center !important;
+  }
+
+  .hero-text {
+    max-width: 100%;
+  }
+
+  .hero-title {
+    font-size: clamp(30px, 8vw, 44px);
+  }
+
+  .hero-overlay {
+    background: linear-gradient(to bottom,
+        rgba(0, 0, 0, 0.1) 0%,
+        rgba(0, 0, 0, 0.55) 100%);
+  }
+}
+
+/* ========================================================
+   FIX 1: Navbar — Visibility & Transparency
+   ======================================================== */
+.navbar {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Default text — dark (non-hero pages) */
+.navbar .nav-logo,
+.navbar .nav-links a,
+.navbar .nav-actions button,
+.navbar .nav-actions a {
+  color: #1A1A1A;
+}
+
+/* On hero — transparent with champagne text */
+.navbar.transparent {
+  background: transparent !important;
+  border-bottom: none;
+  backdrop-filter: none !important;
+}
+
+.navbar.transparent .nav-logo,
+.navbar.transparent .nav-links a,
+.navbar.transparent .nav-links .nav-trigger,
+.navbar.transparent .nav-actions button,
+.navbar.transparent .nav-actions a {
+  color: #DECBA7 !important;
+}
+
+/* Ensure megamenu links inside transparent navbar are still dark */
+.navbar.transparent .nav-dropdown a {
+  color: #1A1A1A !important;
+}
+
+/* After scroll — semi-transparent bg with dark text and blur effect */
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.5) !important;
+  /* FALLBACK: background: rgba(255,255,255,0.97) !important; */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(12px);
+}
+
+.navbar.scrolled .nav-logo,
+.navbar.scrolled .nav-links a,
+.navbar.scrolled .nav-links .nav-trigger,
+.navbar.scrolled .nav-actions button,
+.navbar.scrolled .nav-actions a {
+  color: #1A1A1A !important;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    background: rgba(255, 255, 255, 0.97) !important;
+  }
+
+  .navbar.scrolled {
+    background: rgba(255, 255, 255, 0.5) !important;
+    /* FALLBACK: background: rgba(255,255,255,0.97) !important; */
+    backdrop-filter: blur(12px);
+  }
+
+  .navbar.transparent {
+    backdrop-filter: none !important;
+  }
+
+  .navbar .nav-logo {
+    font-size: 16px !important;
+    white-space: nowrap !important;
+  }
+
+  /* On mobile, transparent hero navbar still has champagne text */
+  .navbar.transparent .nav-logo,
+  .navbar.transparent .nav-actions button,
+  .navbar.transparent .nav-actions a {
+    color: #DECBA7 !important;
+  }
+
+  .navbar.transparent .hamburger span {
+    background: #DECBA7 !important;
+  }
+}
+
+/* ========================================================
+   FIX 2: Cart — Icon Only on Mobile
+   ======================================================== */
+.cart-text {
+  font-size: 14px;
+}
+
+.cart-badge {
+  display: none;
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #1A1A1A;
+  color: white;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .cart-text {
+    display: none !important;
+  }
+
+  .cart-badge {
+    display: flex !important;
+  }
+}
+
+/* ========================================================
+   FIX 4: Hero — Gradient Fallback Background
+   ======================================================== */
+.hero {
+  background: linear-gradient(135deg, #E8B4C8 0%, #D4C5E8 60%, #FAF8F5 100%);
+}
+
+/* ========================================================
+   FIX 5: Physics Pills — Bounding box for Matter.js on Mobile
+   ======================================================== */
+@media (max-width: 768px) {
+
+  .pills-container,
+  .brand-pills-area {
+    position: relative !important;
+    height: 260px !important;
+    overflow: hidden !important;
+    border: 1.5px dashed rgba(0, 0, 0, 0.08) !important;
+    border-radius: 12px !important;
+    background: rgba(0, 0, 0, 0.01) !important;
+    margin-top: 24px !important;
+    margin-bottom: 32px !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+  }
+
+  .brand-pills-area .physics-pill {
+    padding: 6px 12px !important;
+    font-size: 11px !important;
+  }
+
+  .brand-inner {
+    flex-direction: column !important;
+    gap: 0 !important;
+    align-items: center !important;
+  }
+
+  .brand-left {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  .brand-right {
+    flex: none !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 420px !important;
+    border-radius: 16px !important;
+  }
+}
+
+/* Out of Stock badge global & mobile styles */
+.out-of-stock-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(26, 26, 26, 0.82);
+  color: white;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(4px);
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  .out-of-stock-badge {
+    top: 8px !important;
+    left: 8px !important;
+    font-size: 9px !important;
+    padding: 3px 8px !important;
+  }
+}
+
+/* ========================================================
+   FIX 6: Footer — Column Styles & Mobile 2×2 Grid
+   ======================================================== */
+.footer-col h5 {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: #6B6B6B;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.footer-col a {
+  display: block;
+  font-size: 14px;
+  color: #1A1A1A;
+  opacity: 0.75;
+  margin-bottom: 10px;
+  text-decoration: none;
+}
+
+.footer-col a:hover {
+  opacity: 1;
+}
+
+@media (max-width: 1199px) {
+  .footer-inner {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 32px !important;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-inner {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 28px 20px !important;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1 !important;
+    text-align: center !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .footer-inner {
+    gap: 24px 16px !important;
+  }
+}
+
+/* ========================================================
+   FIX 7: Global Mobile — All Pages
+   ======================================================== */
+@media (max-width: 768px) {
+
+  /* Navbar */
+  .nav-links {
+    display: none !important;
+  }
+
+  .hamburger {
+    display: flex !important;
+  }
+
+  .container {
+    padding: 0 16px !important;
+  }
+
+  .section-pad {
+    padding: 48px 0 !important;
+  }
+
+  .section-title {
+    font-size: clamp(24px, 6vw, 36px) !important;
+  }
+
+  .hero-title {
+    font-size: clamp(30px, 8vw, 44px) !important;
+  }
+
+  /* Product grid */
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .product-name {
+    font-size: 12px !important;
+  }
+
+  .product-price {
+    font-size: 12px !important;
+  }
+
+  /* Banners */
+  .banner-inner {
+    flex-direction: column !important;
+    gap: 24px !important;
+  }
+
+  .banner-inner.reverse {
+    flex-direction: column !important;
+  }
+
+  .banner-image {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* Categories */
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .category-label h3 {
+    font-size: 15px !important;
+  }
+
+  .category-label p {
+    font-size: 11px !important;
+  }
+
+  /* Badges */
+  .badges-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+  }
+
+  /* Subscribe */
+  .subscribe-inner {
+    flex-direction: column !important;
+    gap: 24px !important;
+    text-align: center !important;
+  }
+
+  .email-input-wrap {
+    width: 100% !important;
+  }
+
+  .email-input {
+    width: 100% !important;
+  }
+
+  /* About */
+  .about-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .about-photo {
+    aspect-ratio: 1/1 !important;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .stat-card h3 {
+    font-size: 36px !important;
+  }
+
+  .big-quote {
+    font-size: clamp(18px, 5vw, 26px) !important;
+    padding: 0 8px !important;
+  }
+
+  /* Contact */
+  .contact-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+
+  .contact-sidebar {
+    display: none !important;
+  }
+
+  /* Checkout */
+  .checkout-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  .checkout-summary {
+    order: -1 !important;
+  }
+
+  /* Hero buttons */
+  .hero-btns {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+
+  .hero-text>div[style*="display: flex"] {
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: flex-start !important;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: fit-content !important;
+    padding: 12px 20px !important;
+    font-size: 13px !important;
+  }
+
+  /* Product detail */
+  .product-detail-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+
+  /* Admin */
+  .admin-table {
+    overflow-x: auto !important;
+  }
+
+  /* Footer */
+  .footer-watermark {
+    font-size: 22vw !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .product-grid {
+    gap: 8px !important;
+  }
+
+  .categories-grid {
+    gap: 8px !important;
+  }
+
+  .hero-title {
+    font-size: 28px !important;
+  }
+}
+
+/* ========================================================
+   FIX 8: Ticker Bar — No Overflow
+   ======================================================== */
+.ticker-bar {
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  width: 100% !important;
+}
+
+.ticker-inner {
+  display: inline-flex !important;
+  animation: ticker 20s linear infinite !important;
+}
+
+@keyframes ticker {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ========================================================
+   FIX 9: Tablet & Mobile UI Optimizations (< 1024px)
+   ======================================================== */
+@media (max-width: 1023px) {
+
+  /* Navbar Overlap Fix */
+  .nav-links {
+    display: none !important;
+  }
+
+  .hamburger {
+    display: flex !important;
+  }
+
+  /* Brand Story Pills Fit */
+  .pills-container,
+  .brand-pills-area {
+    position: relative !important;
+    height: 260px !important;
+    overflow: hidden !important;
+    border: 1.5px dashed rgba(0, 0, 0, 0.08) !important;
+    border-radius: 12px !important;
+    background: rgba(0, 0, 0, 0.01) !important;
+    margin-top: 24px !important;
+    margin-bottom: 32px !important;
+    box-sizing: border-box !important;
+    max-width: 100% !important;
+  }
+
+  .brand-pills-area .physics-pill {
+    padding: 6px 12px !important;
+    font-size: 11px !important;
+  }
+
+  /* Shop Categories Text Clipping Fix */
+  .category-bar {
+    padding: 10px 12px !important;
+  }
+
+  .category-bar h3 {
+    font-size: 13px !important;
+    margin: 0 !important;
+    line-height: 1.25 !important;
+  }
+
+  .category-bar p {
+    font-size: 11px !important;
+    margin: 2px 0 0 0 !important;
+    line-height: 1.25 !important;
+  }
+
+  /* Center Mirrored Collection Hero Image on Mobile/Tablet */
+  .collection-hero-inner.mirrored .collection-hero-media {
+    margin-right: auto !important;
+    margin-left: auto !important;
+    justify-self: center !important;
+    order: 0 !important;
+  }
+
+  /* Footer Layout Overhaul */
+  .footer-inner {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 40px 32px !important;
+  }
+
+  .footer-newsletter {
+    grid-column: span 2 !important;
+    max-width: 100% !important;
+  }
+
+  /* Footer Bottom Layout & Spacing */
+  .footer-bottom-inner {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 24px 16px 36px 16px !important;
+    box-sizing: border-box !important;
+  }
+
+  .footer-bottom-inner span {
+    font-size: 12px !important;
+  }
+}
+
+/* ========================================================
+   Collapsible Mobile Navigation Drawer Custom Styles
+   ======================================================== */
+.mobile-menu {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  background: #FAF8F5 !important;
+  /* Match brand cream background */
+  z-index: 3000 !important;
+  padding: 0 !important;
+  /* Reset rigid padding */
+  display: none;
+  flex-direction: column;
+}
+
+.mobile-menu.open {
+  display: flex !important;
+}
+
+.mobile-menu-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 18px 24px !important;
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.05) !important;
+  background: #FAF8F5 !important;
+}
+
+.mobile-menu-body {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  padding: 24px !important;
+}
+
+.mobile-nav {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+
+.mobile-nav-item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+  padding-bottom: 12px !important;
+}
+
+.mobile-nav-trigger-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.mobile-nav-link,
+.mobile-nav a.mobile-nav-link {
+  font-size: 24px !important;
+  font-family: var(--font-display), Cormorant Garamond, serif !important;
+  font-weight: 500 !important;
+  color: #1A1A1A !important;
+  text-decoration: none !important;
+}
+
+.mobile-nav-link-span {
+  font-size: 24px !important;
+  font-family: var(--font-display), Cormorant Garamond, serif !important;
+  font-weight: 500 !important;
+  color: #1A1A1A !important;
+}
+
+.mobile-nav-expand-btn {
+  background: none !important;
+  border: none !important;
+  font-size: 26px !important;
+  color: #8C8275 !important;
+  /* Warm brown */
+  cursor: pointer !important;
+  width: 44px !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-right: -10px !important;
+}
+
+.mobile-sub-nav {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  padding: 10px 0 6px 16px !important;
+  animation: pageIn 0.2s ease-out !important;
+}
+
+.mobile-sub-nav a,
+.mobile-nav .mobile-sub-nav a {
+  font-size: 16px !important;
+  font-family: var(--font-body), sans-serif !important;
+  font-weight: 400 !important;
+  color: #555555 !important;
+  text-decoration: none !important;
+  padding: 4px 0 !important;
+}
+
+.mobile-sub-nav a:hover {
+  color: #1A1A1A !important;
+}
+
+/* ========================================================
+   FIX 10: Subscribe Modal Image Display & Layout on Mobile
+   ======================================================== */
+@media (max-width: 600px) {
+  .subscribe-modal-card {
+    flex-direction: column !important;
+    max-width: 360px !important;
+    width: 92% !important;
+    margin: 0 auto !important;
+  }
+
+  .modal-image {
+    display: block !important;
+    width: 100% !important;
+    height: 220px !important;
+  }
+
+  .modal-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center 12% !important;
+  }
+
+  .modal-content {
+    padding: 24px 20px !important;
+    text-align: center !important;
+  }
+
+  .modal-content h2 {
+    font-size: 24px !important;
+  }
+
+  .modal-close {
+    background: rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+    top: 10px !important;
+    right: 10px !important;
+  }
+}
+
+/* ========================================================
+   FIX 11: Account Layout Responsive Classes
+   ======================================================== */
+.account-nav {
+  background: #EFE9DF;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.account-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #1A1A1A;
+  margin-right: 48px;
+  flex-shrink: 0;
+}
+
+.account-nav-brand-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.account-nav-tabs {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.account-nav-tab {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.account-nav-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.account-nav-username {
+  font-size: 13px;
+  color: #666;
+}
+
+.account-nav-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.account-mobile-tabs-container {
+  display: none !important;
+}
+
+.account-order-details-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 320px !important;
+  gap: 20px !important;
+}
+
+.account-order-progress-card {
+  padding: 28px 32px !important;
+}
+
+.account-order-row {
+  padding: 20px 24px !important;
+  gap: 16px !important;
+}
+
+@media (max-width: 640px) {
+  .account-nav {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    height: 56px !important;
+    padding: 0 16px !important;
+    background: #EFE9DF !important;
+    border-bottom: 1px solid rgba(74, 64, 53, 0.08) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02) !important;
+  }
+  
+  .account-nav-brand {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin-right: 0 !important;
+  }
+  
+  .account-nav-brand img {
+    height: 28px !important;
+    width: auto !important;
+  }
+  
+  .account-nav-brand-text {
+    display: inline-block !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #1A1A1A !important;
+  }
+  
+  .account-nav-tabs {
+    display: none !important;
+  }
+
+  .account-mobile-tabs-container {
+    display: flex !important;
+    gap: 10px !important;
+    margin-bottom: 24px !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    padding-bottom: 14px !important;
+  }
+  
+  .account-nav-tab {
+    padding: 10px 22px !important;
+    font-size: 14px !important;
+    border-radius: 999px !important;
+    border: none !important;
+    border-bottom: none !important;
+    background: rgba(74, 64, 53, 0.04) !important;
+    color: #555 !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .account-nav-tab.active {
+    background: #1A1A1A !important;
+    color: #FAF8F5 !important;
+    font-weight: 600 !important;
+  }
+  
+  .account-nav-user {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .account-nav-username {
+    display: inline-block !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #4A4035 !important;
+    text-transform: capitalize !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 120px !important;
+  }
+  
+  .account-nav-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    border: 1px solid rgba(74, 64, 53, 0.15) !important;
+  }
+
+  .account-order-details-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .account-order-progress-card {
+    padding: 20px 16px !important;
+  }
+
+  .account-order-row {
+    padding: 16px !important;
+    gap: 12px !important;
+  }
+}
+
+/* ========================================================
+   FIX 12: Admin Layout Responsive Classes
+   ======================================================== */
+.admin-nav {
+  background: #EFE9DF;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  height: 58px;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.admin-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: 16px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.admin-nav-brand-text {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1A1A1A;
+  letter-spacing: 0.02em;
+}
+
+.admin-nav-links {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.admin-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.admin-nav-username {
+  font-size: 13px;
+  color: #666;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-nav-signout-btn {
+  background: white;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.admin-nav-dropdown-tab-wrapper {
+  position: relative !important;
+}
+
+.admin-nav-dropdown-menu-desktop {
+  display: block !important;
+}
+
+.admin-nav-dropdown-menu-mobile {
+  display: none !important;
+}
+
+/* Collections Desktop Styles */
+.admin-collection-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 20px !important;
+  padding: 16px 20px !important;
+}
+
+.admin-collection-row .collection-info-col {
+  flex: 1 !important;
+}
+
+.admin-collection-row .collection-actions-group {
+  display: flex !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+.admin-status-tabs {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin-bottom: 20px !important;
+}
+
+@media (max-width: 900px) {
+  .admin-nav {
+    display: grid !important;
+    grid-template-columns: auto 1fr auto !important;
+    grid-template-rows: auto auto !important;
+    gap: 14px 16px !important;
+    padding: 16px 20px 12px !important;
+    height: auto !important;
+    align-items: center !important;
+    background: rgba(250, 248, 245, 0.88) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(74, 64, 53, 0.08) !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03) !important;
+  }
+
+  .admin-nav-brand {
+    grid-column: 1 / 2 !important;
+    grid-row: 1 / 2 !important;
+    font-size: 14px !important;
+    gap: 6px !important;
+  }
+
+  .admin-nav-brand img {
+    height: 24px !important;
+  }
+
+  .admin-nav-brand-text {
+    font-size: 14px !important;
+  }
+
+  .admin-nav-right {
+    grid-column: 3 / 4 !important;
+    grid-row: 1 / 2 !important;
+    justify-self: end !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .admin-nav-username {
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    color: #8C8275 !important;
+    background: rgba(74, 64, 53, 0.06) !important;
+    padding: 5px 12px !important;
+    border-radius: 999px !important;
+    max-width: 100px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+  }
+
+  .admin-nav-signout-btn {
+    padding: 5px 12px !important;
+    font-size: 11px !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(74, 64, 53, 0.15) !important;
+    background: transparent !important;
+    color: #4A4035 !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .admin-nav-signout-btn:active {
+    background: rgba(74, 64, 53, 0.08) !important;
+  }
+
+  .admin-nav-links {
+    grid-column: 1 / 4 !important;
+    grid-row: 2 / 3 !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 10px !important;
+    padding: 4px 0 10px !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .admin-nav-links::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .admin-nav-links a,
+  .admin-nav-links button {
+    flex-shrink: 0 !important;
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    border-radius: 999px !important;
+    background: rgba(74, 64, 53, 0.05) !important;
+    border: 1px solid transparent !important;
+    color: #4A4035 !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: none !important;
+  }
+
+  .admin-nav-links a:active,
+  .admin-nav-links button:active {
+    transform: scale(0.97) !important;
+  }
+
+  .admin-nav-links a.active,
+  .admin-nav-links button.active {
+    background: #1A1A1A !important;
+    color: #FAF8F5 !important;
+    border-color: #1A1A1A !important;
+    box-shadow: 0 4px 12px rgba(26, 26, 26, 0.15) !important;
+  }
+
+  /* Admin Status/Filter Tabs horizontal scroll */
+  .admin-status-tabs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 8px !important;
+    padding: 4px 0 8px !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .admin-status-tabs::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .admin-status-tabs button {
+    flex-shrink: 0 !important;
+    padding: 8px 15px !important;
+    font-size: 13px !important;
+    border-radius: 999px !important;
+    /* Premium rounded pill */
+  }
+
+  /* Dropdown escape mechanism: relative positioning with floating absolute child */
+  .admin-nav-dropdown-tab-wrapper {
+    position: relative !important;
+  }
+
+  .admin-nav-dropdown-menu {
+    background: white !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    border-radius: 10px !important;
+    padding: 6px !important;
+    min-width: 160px !important;
+    z-index: 99999 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .admin-nav-links a.admin-nav-dropdown-item {
+    border-radius: 7px !important;
+    padding: 7px 12px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    background: transparent !important;
+    color: #555 !important;
+    border: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    text-align: left !important;
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .admin-nav-links a.admin-nav-dropdown-item:hover {
+    background: #F9F7F4 !important;
+    color: #1A1A1A !important;
+  }
+
+  .admin-nav-links a.admin-nav-dropdown-item.active {
+    background: #F5F0EB !important;
+    color: #1A1A1A !important;
+  }
+
+  /* Make select dropdowns fit content comfortably and match sizes */
+  .admin-nav select,
+  .admin-main-container select,
+  .admin-status-tabs select,
+  select {
+    min-width: 120px !important;
+    max-width: 100% !important;
+    font-size: 13px !important;
+    padding: 6px 10px !important;
+  }
+
+  select option,
+  option {
+    font-size: 13px !important;
+    padding: 6px 10px !important;
+  }
+
+  /* Settings group headings and buttons space spacing on mobile */
+  .admin-settings-group-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .admin-settings-group-header button {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  /* Make all table structures in admin dashboard scrollable on mobile */
+  .admin-table-container,
+  table,
+  .table-responsive {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Admin main container mobile spacing */
+  .admin-main-container {
+    padding: 16px 12px !important;
+  }
+
+  /* Status filter tabs on mobile */
+  .admin-status-tabs {
+    gap: 6px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .admin-status-tabs button {
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    gap: 4px !important;
+  }
+
+  /* Admin orders list card items */
+  .admin-order-row {
+    padding: 12px 14px !important;
+    gap: 12px !important;
+  }
+
+  .admin-order-row img {
+    width: 36px !important;
+    height: 48px !important;
+  }
+
+  /* Admin product list responsive card grid layout */
+  .admin-product-list {
+    gap: 12px !important;
+  }
+
+  .admin-product-row {
+    display: grid !important;
+    grid-template-columns: 56px 1fr auto !important;
+    grid-template-areas:
+      "img info price"
+      "actions actions actions" !important;
+    background: white !important;
+    border: 1px solid #EAE6DF !important;
+    border-radius: 12px !important;
+    padding: 12px !important;
+    gap: 8px 12px !important;
+    align-items: center !important;
+  }
+
+  .admin-product-row img {
+    grid-area: img !important;
+  }
+
+  .admin-product-row .product-info-col {
+    grid-area: info !important;
+  }
+
+  .admin-product-row .product-price-col {
+    grid-area: price !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    text-align: right !important;
+  }
+
+  .admin-product-row .product-actions-group {
+    grid-area: actions !important;
+    display: flex !important;
+    gap: 6px !important;
+    justify-content: flex-end !important;
+    border-top: 1px solid #F3F4F6 !important;
+    padding-top: 8px !important;
+    margin-top: 4px !important;
+  }
+
+  .admin-product-row .product-actions-group button,
+  .admin-product-row .product-actions-group div {
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+  }
+
+  /* Admin collections list responsive layout */
+  .admin-collection-row {
+    display: grid !important;
+    grid-template-columns: 56px 1fr auto !important;
+    grid-template-areas:
+      "img info badge"
+      "actions actions actions" !important;
+    padding: 12px !important;
+    gap: 8px 12px !important;
+    align-items: center !important;
+    background: white !important;
+    border: 1px solid #EAE6DF !important;
+    border-radius: 12px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .admin-collection-row div[style*="width: 56"] {
+    grid-area: img !important;
+  }
+
+  .admin-collection-row .collection-info-col {
+    grid-area: info !important;
+  }
+
+  .admin-collection-row .collection-status-badge {
+    grid-area: badge !important;
+    justify-self: end !important;
+  }
+
+  .admin-collection-row .collection-actions-group {
+    grid-area: actions !important;
+    display: flex !important;
+    gap: 6px !important;
+    justify-content: flex-end !important;
+    border-top: 1px solid #F3F4F6 !important;
+    padding-top: 8px !important;
+    margin-top: 4px !important;
+  }
+
+  .admin-collection-row .collection-actions-group button,
+  .admin-collection-row .collection-actions-group div {
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+  }
+
+  /* Media page layout adjustments */
+  .admin-media-upload-row {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  .admin-media-active-meta {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .admin-media-active-meta .admin-media-filename {
+    max-width: 100% !important;
+    word-break: break-all !important;
+    white-space: normal !important;
+  }
+
+  .admin-media-active-meta .admin-media-action-btn {
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  .admin-media-list-row {
+    display: grid !important;
+    grid-template-columns: auto 1fr !important;
+    grid-template-areas:
+      "badge filename"
+      "actions actions" !important;
+    gap: 8px 12px !important;
+    padding: 12px 0 !important;
+    align-items: center !important;
+  }
+
+  .admin-media-list-row span {
+    grid-area: badge !important;
+  }
+
+  .admin-media-list-row p {
+    grid-area: filename !important;
+    max-width: 100% !important;
+    word-break: break-all !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
+  }
+
+  .admin-media-list-actions {
+    grid-area: actions !important;
+    display: flex !important;
+    gap: 6px !important;
+    justify-content: flex-end !important;
+  }
+
+  .admin-media-list-actions button {
+    font-size: 11px !important;
+    padding: 4px 10px !important;
+  }
+
+  /* Order details page grids stacking */
+  .admin-order-details-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+}
+
+/* Checkout and Contact Page Responsiveness */
+.checkout-main-padding {
+  padding: 80px 24px 120px;
+}
+
+.checkout-grid-container {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 48px;
+  align-items: start;
+}
+
+.checkout-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.checkout-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.checkout-summary-sticky {
+  position: sticky;
+  top: 100px;
+}
+
+.contact-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 992px) {
+  .checkout-main-padding {
+    padding: 60px 16px 80px;
+  }
+
+  .checkout-grid-container {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .checkout-summary-sticky {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .checkout-row-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-row-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================================
+   Admin Dashboard Responsive Overrides
+   ======================================================== */
+
+/* Bespoke & Messages Split Layout */
+.admin-split-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 992px) {
+  .admin-split-layout.has-selected {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Coupon Row Layout */
+.coupon-row-item {
+  display: grid;
+  grid-template-columns: 140px 1fr 100px 120px auto;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 24px;
+}
+
+.coupon-stats-container {
+  display: contents;
+}
+
+@media (max-width: 992px) {
+  .coupon-row-item {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 16px 20px;
+  }
+
+  .coupon-row-item>div {
+    flex: unset !important;
+    width: 100% !important;
+    min-width: unset !important;
+  }
+
+  .coupon-badge-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .coupon-stats-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #F0EDE8;
+    padding-top: 12px;
+    margin-top: 4px;
+  }
+
+  .coupon-actions-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 4px;
+  }
+}
+
+/* Collections Form Grid */
+.collections-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .collections-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.admin-details-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 576px) {
+  .admin-details-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Admin Detail Modal (Bespoke & Messages mobile popups) */
+.admin-detail-modal-backdrop {
+  display: block;
+  /* Normal inline block on desktop */
+}
+
+.admin-detail-modal-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #E8E8E8;
+  padding: 24px;
+  position: relative;
+}
+
+.admin-detail-modal-close {
+  display: none !important;
+  /* Hidden on desktop */
+}
+
+@media (max-width: 992px) {
+  .admin-detail-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    animation: adminFadeIn 0.2s ease-out;
+  }
+
+  .admin-detail-modal-card {
+    width: 100%;
+    max-width: 540px;
+    max-height: 85vh;
+    overflow-y: auto;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    animation: adminSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .admin-detail-modal-close {
+    display: flex !important;
+  }
+}
+
+@keyframes adminFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes adminSlideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
