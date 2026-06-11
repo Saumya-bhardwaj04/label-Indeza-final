@@ -7,14 +7,6 @@ const nextConfig: NextConfig = {
       {
         source: '/api/auth/callback/google',
         destination: '/api/customer/auth/callback/google',
-      },
-      {
-        source: '/api/auth/signin/google',
-        destination: '/api/customer/auth/signin/google',
-      },
-      {
-        source: '/api/auth/providers',
-        destination: '/api/customer/auth/providers',
       }
     ]
   },
