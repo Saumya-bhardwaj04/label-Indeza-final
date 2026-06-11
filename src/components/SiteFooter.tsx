@@ -128,9 +128,9 @@ export default function SiteFooter() {
         <div className="container footer-bottom-inner" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>© Label Indeza, 2026</span>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span>All Right Reserved</span>
             {/* Hidden admin dot — barely visible */}
             <HiddenAdminDot />
+            <span>All Right Reserved</span>
           </div>
         </div>
       </div>
