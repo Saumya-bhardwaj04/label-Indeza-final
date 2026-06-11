@@ -16,7 +16,7 @@ const handler = async (req: Request, ctx: any) => {
     Object.defineProperty(req, 'nextUrl', { get: () => url })
   }
   
-  return NextAuth(customerAuthOptions)(spoofedReq, ctx)
+  return NextAuth(customerAuthOptions)(req, ctx)
 }
 
 export { handler as GET, handler as POST }
