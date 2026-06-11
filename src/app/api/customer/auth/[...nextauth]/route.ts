@@ -11,12 +11,10 @@ const handler = async (req: Request, ctx: any) => {
   const url = new URL(req.url)
   url.pathname = url.pathname.replace('/api/customer/auth', '/api/auth')
   
-  const spoofedReq = new Request(url, {
-    method: req.method,
-    headers: req.headers,
-    body: req.body,
-    duplex: 'half'
-  } as any)
+  Object.defineProperty(req, 'url', { get: () => url.toString() })
+  if ('nextUrl' in req) {
+    Object.defineProperty(req, 'nextUrl', { get: () => url })
+  }
   
   return NextAuth(customerAuthOptions)(spoofedReq, ctx)
 }
