@@ -144,8 +144,8 @@ export default function ContactPage() {
                 }}
               >
                 <div>
-                  <p style={{ fontWeight: 500, marginBottom: 4 }}>Chat on WhatsApp</p>
-                  <p style={{ color: '#6B6B6B', fontSize: 15 }}>{s.contact_phone || '+91 99999 99999'}</p>
+                  <p style={{ fontWeight: 500, marginBottom: 4 }}>Join our WhatsApp Group</p>
+                  <p style={{ color: '#6B6B6B', fontSize: 15 }}>Get early access to our latest designs, dresses, and exclusive updates.</p>
                 </div>
                 <a
                   href={s.social_whatsapp || 'https://wa.me/919999999999'}
@@ -161,7 +161,7 @@ export default function ContactPage() {
                     color: '#1A1A1A',
                   }}
                 >
-                  Chat →
+                  Join →
                 </a>
               </div>
 

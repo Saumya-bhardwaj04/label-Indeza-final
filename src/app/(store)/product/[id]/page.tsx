@@ -331,23 +331,33 @@ export default function ProductDetailPage() {
                     <p style={{ fontWeight: 600, marginBottom: '4px' }}>Currently Out of Stock</p>
                     <p style={{ fontSize: '13px', color: '#888', lineHeight: 1.5 }}>
                       This piece is currently unavailable. Check back soon or
-                      request a custom version from our bespoke service.
+                      join our mailing list to be notified when it's back in stock!
                     </p>
                   </div>
                 </div>
-                <a
-                  href="/customize"
+                <button
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-subscribe', { detail: { mode: 'notify', product: product.name } }))}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#1A1A1A'
+                    e.currentTarget.style.color = 'white'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'white'
+                    e.currentTarget.style.color = '#1A1A1A'
+                  }}
                   style={{
+                    width: '100%',
                     display: 'block', textAlign: 'center',
                     background: 'white', color: '#1A1A1A',
                     border: '1.5px solid #1A1A1A',
                     borderRadius: '999px', padding: '16px',
                     fontSize: '14px', fontWeight: 500,
-                    textDecoration: 'none',
+                    cursor: 'pointer', fontFamily: 'inherit',
+                    transition: 'all 0.2s ease',
                   }}
                 >
-                  Request Custom Version →
-                </a>
+                  Notify Me →
+                </button>
               </div>
             )}
 

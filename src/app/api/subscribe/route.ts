@@ -14,6 +14,11 @@ export async function POST(req: Request) {
 
     const existing = await Subscriber.findOne({ email: email.toLowerCase() })
     if (existing) {
+      if (source.startsWith('Waitlist') && !existing.source.includes(source)) {
+        existing.source = existing.source + ' | ' + source
+        await existing.save()
+        return NextResponse.json({ success: true, message: 'Added to waitlist!' })
+      }
       return NextResponse.json({ success: true, message: 'You are already subscribed!' })
     }
 

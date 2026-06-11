@@ -1745,3 +1745,154 @@ body {
     opacity: 1;
   }
 }
+
+/* ========================================================
+   WhatsApp Floating Helper
+   ======================================================== */
+.whatsapp-helper-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none; /* Let clicks pass through container */
+}
+
+/* Make actual elements clickable */
+.whatsapp-trigger-btn, .whatsapp-popup {
+  pointer-events: auto;
+}
+
+.whatsapp-trigger-btn {
+  background: #1A1A1A;
+  color: white;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s;
+  position: relative;
+  z-index: 2;
+}
+
+.whatsapp-trigger-btn:hover {
+  transform: scale(1.05);
+  background: #2a2a2a;
+}
+
+.whatsapp-trigger-btn.active {
+  background: #1A1A1A;
+}
+
+.whatsapp-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.whatsapp-popup {
+  background: white;
+  border-radius: 16px;
+  width: 320px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+  border: 1px solid rgba(0,0,0,0.06);
+  margin-bottom: 16px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px) scale(0.95);
+  transform-origin: bottom right;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.whatsapp-popup.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.whatsapp-popup-header {
+  background: #1A1A1A;
+  color: white;
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.whatsapp-close-btn {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.whatsapp-close-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.whatsapp-popup-body {
+  padding: 24px;
+  background: #F9F7F4;
+}
+
+.whatsapp-chat-bubble {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  border-top-left-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.whatsapp-popup-footer {
+  padding: 20px 24px;
+  background: white;
+  border-top: 1px solid rgba(0,0,0,0.04);
+}
+
+.whatsapp-start-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #25D366; /* Official WhatsApp Green, feels trusted */
+  color: white;
+  text-decoration: none;
+  padding: 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.whatsapp-start-btn:hover {
+  background: #1EBE5D;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .whatsapp-helper-container {
+    bottom: 20px;
+    right: 20px;
+  }
+  .whatsapp-popup {
+    width: calc(100vw - 40px);
+    max-width: 320px;
+  }
+}

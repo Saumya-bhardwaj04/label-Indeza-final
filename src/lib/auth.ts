@@ -10,7 +10,7 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: 'credentials',
       credentials: {
-        email:    { label: 'Email',    type: 'email' },
+        email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
@@ -30,17 +30,17 @@ export const authOptions: NextAuthOptions = {
         if (!isValid) return null
 
         return {
-          id:    admin._id.toString(),
-          name:  admin.name,
+          id: admin._id.toString(),
+          name: admin.name,
           email: admin.email,
-          role:  admin.role,
+          role: admin.role,
         }
       },
     }),
   ],
   session: {
     strategy: 'jwt',
-    maxAge:   8 * 60 * 60, // 8-hour sessions — admin should re-login daily
+    maxAge: 8 * 60 * 60, // 8-hour sessions — admin should re-login daily
   },
   jwt: {
     maxAge: 8 * 60 * 60,
@@ -50,14 +50,14 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.role = (user as any).role
-        token.id   = user.id
+        token.id = user.id
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
         (session.user as any).role = token.role
-        ;(session.user as any).id  = token.id
+          ; (session.user as any).id = token.id
       }
       return session
     },
