@@ -1,8 +1,22 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  env: {
-    NEXTAUTH_URL: 'https://www.labelindeza.com/api/customer/auth',
+  // Fix for NextAuth v4 forcing /api/auth on Vercel deployments
+  async rewrites() {
+    return [
+      {
+        source: '/api/auth/callback/google',
+        destination: '/api/customer/auth/callback/google',
+      },
+      {
+        source: '/api/auth/signin/google',
+        destination: '/api/customer/auth/signin/google',
+      },
+      {
+        source: '/api/auth/providers',
+        destination: '/api/customer/auth/providers',
+      }
+    ]
   },
   images: {
     remotePatterns: [
