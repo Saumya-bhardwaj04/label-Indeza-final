@@ -2,14 +2,14 @@
 import { useState } from 'react'
 
 const faqs = [
-  { q: 'What is your return policy?', a: 'We accept returns within 30 days of delivery. Items must be unused, unwashed, and in original packaging. Contact us at hello@labelindeza.com to initiate a return.' },
+  { q: 'What is your return policy?', a: 'We accept returns within 30 days of delivery. Items must be unused, unwashed, and in original packaging. Contact us at labelindeza@gmail.com to initiate a return.' },
   { q: 'How long does delivery take?', a: 'Standard delivery takes 5–7 working days across India. Express delivery (2–3 days) is available at checkout for select cities.' },
   { q: 'Do you offer free shipping?', a: 'Yes! Orders above ₹999 qualify for free shipping. For orders below ₹999, a flat delivery charge of ₹99 applies.' },
   { q: 'Can I customize or alter a product?', a: 'Absolutely! Visit our Customize page to request bespoke alterations or fully custom outfits made to your measurements.' },
   { q: 'How do I track my order?', a: 'After placing your order, sign in to your account and visit the Orders section. You will also receive email updates when your order is shipped and delivered.' },
   { q: 'What payment methods do you accept?', a: 'We accept all major credit/debit cards, UPI, net banking, and wallets via Razorpay. All transactions are secured and encrypted.' },
   { q: 'Are the fabric and colours accurate in photos?', a: 'We make every effort to represent colours accurately, but slight variations may occur due to screen calibration. If unsure, contact us before ordering.' },
-  { q: 'How do I contact customer support?', a: 'You can reach us via WhatsApp, email at hello@labelindeza.com, or fill out the contact form on our Contact Us page. We respond within 24 hours.' },
+  { q: 'How do I contact customer support?', a: 'You can reach us via WhatsApp, email at labelindeza@gmail.com, or fill out the contact form on our Contact Us page. We respond within 24 hours.' },
 ]
 
 export default function FAQPage() {

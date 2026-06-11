@@ -41,9 +41,12 @@ export default function PhysicsPills({ customPills }: { customPills?: { text: st
   useEffect(() => {
     if (dimensions.width === 0 || dimensions.height === 0) return
 
-    let cleanup: (() => void) | undefined
+    let active = true
+    let cleanupFn: (() => void) | undefined
 
     import('matter-js').then((Matter) => {
+      if (!active) return
+
       const { Engine, Bodies, World, Runner, Mouse, MouseConstraint, Composite } = Matter
       const container = containerRef.current
       if (!container) return
@@ -54,12 +57,17 @@ export default function PhysicsPills({ customPills }: { customPills?: { text: st
       const H = dimensions.height
       const pillEls = Array.from(container.querySelectorAll<HTMLElement>('.physics-pill'))
 
+      // Enable touch-action: none on the pills so dragging works on mobile
+      pillEls.forEach((el) => {
+        el.style.touchAction = 'none'
+      })
+
       const bodies = pillEls.map((el) => {
         const pw = el.offsetWidth + 8
         const ph = el.offsetHeight + 8
         const body = Bodies.rectangle(
-          Math.random() * W * 0.7 + 40,
-          Math.random() * H * 0.4 + 20,
+          Math.random() * (W - pw) + pw / 2,
+          Math.random() * (H - ph) + ph / 2,
           pw,
           ph,
           { restitution: 0.4, friction: 0.1, frictionAir: 0.02 }
@@ -75,29 +83,6 @@ export default function PhysicsPills({ customPills }: { customPills?: { text: st
       ])
 
       const mouse = Mouse.create(container)
-      
-      // Let the browser handle vertical page scrolling by default
-      mouse.element.style.touchAction = 'pan-y'
-
-      // Disable scrolling ONLY when touching/dragging a pill
-      const touchStartHandlers = new Map<HTMLElement, () => void>()
-      const touchEndHandlers = new Map<HTMLElement, () => void>()
-
-      pillEls.forEach((el) => {
-        const start = () => {
-          container.style.touchAction = 'none'
-        }
-        const end = () => {
-          container.style.touchAction = 'pan-y'
-        }
-
-        el.addEventListener('touchstart', start, { passive: true })
-        el.addEventListener('touchend', end, { passive: true })
-        el.addEventListener('touchcancel', end, { passive: true })
-
-        touchStartHandlers.set(el, start)
-        touchEndHandlers.set(el, end)
-      })
 
       const mc = MouseConstraint.create(engine, {
         mouse,
@@ -108,6 +93,7 @@ export default function PhysicsPills({ customPills }: { customPills?: { text: st
       Runner.run(runner, engine)
       let frame: number
       const animate = () => {
+        if (!active) return
         frame = requestAnimationFrame(animate)
         Engine.update(engine)
         bodies.forEach((body, i) => {
@@ -120,26 +106,23 @@ export default function PhysicsPills({ customPills }: { customPills?: { text: st
       }
       animate()
 
-      cleanup = () => {
+      cleanupFn = () => {
         cancelAnimationFrame(frame)
         Runner.stop(runner)
         World.clear(engine.world, false)
         Engine.clear(engine)
 
-        // Remove custom touch listeners
+        // Reset touchAction
         pillEls.forEach((el) => {
-          const start = touchStartHandlers.get(el)
-          const end = touchEndHandlers.get(el)
-          if (start) el.removeEventListener('touchstart', start)
-          if (end) {
-            el.removeEventListener('touchend', end)
-            el.removeEventListener('touchcancel', end)
-          }
+          el.style.touchAction = ''
         })
       }
     })
 
-    return () => cleanup?.()
+    return () => {
+      active = false
+      cleanupFn?.()
+    }
   }, [activePills, dimensions])
 
   return (

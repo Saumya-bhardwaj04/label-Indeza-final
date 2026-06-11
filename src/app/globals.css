@@ -292,6 +292,7 @@ body {
   .pills-container,
   .brand-pills-area {
     position: relative !important;
+    width: 100% !important;
     height: 260px !important;
     overflow: hidden !important;
     border: 1.5px dashed rgba(0, 0, 0, 0.08) !important;
@@ -304,27 +305,9 @@ body {
   }
 
   .brand-pills-area .physics-pill {
-    padding: 6px 12px !important;
-    font-size: 11px !important;
-  }
-
-  .brand-inner {
-    flex-direction: column !important;
-    gap: 0 !important;
-    align-items: center !important;
-  }
-
-  .brand-left {
-    width: 100% !important;
-    text-align: center !important;
-  }
-
-  .brand-right {
-    flex: none !important;
-    max-width: 100% !important;
-    width: 100% !important;
-    max-height: 420px !important;
-    border-radius: 16px !important;
+    padding: 10px 18px !important;
+    font-size: 13.5px !important;
+    touch-action: none !important;
   }
 }
 
@@ -635,25 +618,6 @@ body {
     display: flex !important;
   }
 
-  /* Brand Story Pills Fit */
-  .pills-container,
-  .brand-pills-area {
-    position: relative !important;
-    height: 260px !important;
-    overflow: hidden !important;
-    border: 1.5px dashed rgba(0, 0, 0, 0.08) !important;
-    border-radius: 12px !important;
-    background: rgba(0, 0, 0, 0.01) !important;
-    margin-top: 24px !important;
-    margin-bottom: 32px !important;
-    box-sizing: border-box !important;
-    max-width: 100% !important;
-  }
-
-  .brand-pills-area .physics-pill {
-    padding: 6px 12px !important;
-    font-size: 11px !important;
-  }
 
   /* Shop Categories Text Clipping Fix */
   .category-bar {
@@ -1145,7 +1109,7 @@ body {
   margin-bottom: 20px !important;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .admin-nav {
     display: grid !important;
     grid-template-columns: auto 1fr auto !important;

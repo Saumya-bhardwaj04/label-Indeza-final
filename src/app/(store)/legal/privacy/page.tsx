@@ -18,7 +18,7 @@ export default function PrivacyPage() {
             <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#1A1A1A', margin: '32px 0 12px' }}>How We Use Your Data</h2>
             <p>We use your information to process orders, send order updates, and — only if you opt in — share style tips and promotions via email. We never sell your data to third parties.</p>
             <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#1A1A1A', margin: '32px 0 12px' }}>Your Rights</h2>
-            <p>You may request access to, correction of, or deletion of your personal data at any time by contacting us at hello@labelindeza.com.</p>
+            <p>You may request access to, correction of, or deletion of your personal data at any time by contacting us at labelindeza@gmail.com.</p>
           </div>
         </div>
       </section>

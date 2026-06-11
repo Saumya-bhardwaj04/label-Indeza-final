@@ -168,10 +168,10 @@ export default function ContactPage() {
               <div style={{ padding: '24px 0', borderBottom: '1px solid #F0F0F0' }}>
                 <p style={{ fontWeight: 500, marginBottom: 4 }}>Send an email</p>
                 <a
-                  href={`mailto:${s.contact_email || 'hello@labelindeza.com'}`}
+                  href={`mailto:${s.contact_email || 'labelindeza@gmail.com'}`}
                   style={{ color: '#6B6B6B', fontSize: 15, textDecoration: 'none', wordBreak: 'break-all' }}
                 >
-                  {s.contact_email || 'hello@labelindeza.com'}
+                  {s.contact_email || 'labelindeza@gmail.com'}
                 </a>
               </div>
             </div>

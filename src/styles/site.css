@@ -939,6 +939,8 @@ button {
 
 .brand-pills-area .physics-pill {
   position: absolute;
+  left: 0;
+  top: 0;
   visibility: hidden;
   padding: 10px 20px;
   border-radius: var(--radius-pill);
@@ -1563,11 +1565,14 @@ button {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .banner-inner,
-  .brand-inner {
+  .banner-inner {
     flex-direction: column;
     gap: 40px;
     text-align: center;
+  }
+
+  .brand-inner {
+    gap: 32px;
   }
 
   .collection-hero-inner {
@@ -1594,20 +1599,8 @@ button {
     flex-direction: column;
   }
 
-  .banner-image,
-  .brand-right {
+  .banner-image {
     max-width: 100%;
-  }
-
-  .brand-left {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .pills-container {
-    width: 100%;
-    max-width: 500px;
   }
 
   .categories-grid {
@@ -1631,6 +1624,28 @@ button {
 }
 
 @media (max-width: 768px) {
+  .brand-inner {
+    flex-direction: column;
+    gap: 32px;
+    text-align: center;
+  }
+
+  .brand-right {
+    max-width: 100%;
+  }
+
+  .brand-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .pills-container {
+    width: 100%;
+    max-width: 100%;
+  }
+
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;

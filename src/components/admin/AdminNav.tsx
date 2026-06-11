@@ -60,9 +60,9 @@ function DropdownTab({
   const isActive = item.children?.some(c => path.startsWith(c.href)) || isOpen
 
   useEffect(() => {
-    setIsMobile(window.innerWidth <= 900)
+    setIsMobile(window.innerWidth <= 1024)
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 900)
+      setIsMobile(window.innerWidth <= 1024)
     }
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
@@ -79,8 +79,8 @@ function DropdownTab({
       }
     }
 
-    const handleScroll = () => {
-      if (isOpen) {
+    const handleScroll = (e: Event) => {
+      if (isOpen && e.target instanceof HTMLElement && e.target.classList.contains('admin-nav-links')) {
         onClose()
       }
     }
@@ -98,13 +98,13 @@ function DropdownTab({
   }, [isOpen, onClose])
 
   const handleEnter = () => {
-    if (window.innerWidth > 900) {
+    if (window.innerWidth > 1024) {
       if (timer.current) clearTimeout(timer.current)
       if (!isOpen) onToggle()
     }
   }
   const handleLeave = () => {
-    if (window.innerWidth > 900) {
+    if (window.innerWidth > 1024) {
       timer.current = setTimeout(() => onClose(), 120)
     }
   }
@@ -195,13 +195,20 @@ function DropdownTab({
 export default function AdminNav({ adminName }: { adminName: string }) {
   const path = usePathname()
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
-
   useEffect(() => {
-    const handleGlobalClick = () => {
+    const handleGlobalClick = (e: Event) => {
+      const target = e.target as HTMLElement
+      if (target && target.closest && (target.closest('.admin-nav-dropdown-tab-wrapper') || target.closest('.admin-nav-dropdown-menu'))) {
+        return
+      }
       setActiveDropdown(null)
     }
     window.addEventListener('click', handleGlobalClick)
-    return () => window.removeEventListener('click', handleGlobalClick)
+    window.addEventListener('touchstart', handleGlobalClick, { passive: true })
+    return () => {
+      window.removeEventListener('click', handleGlobalClick)
+      window.removeEventListener('touchstart', handleGlobalClick)
+    }
   }, [])
 
   return (
