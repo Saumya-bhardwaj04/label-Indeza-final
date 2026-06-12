@@ -51,7 +51,7 @@ export default function CheckoutPage() {
   const [couponError,   setCouponError]   = useState('')
 
   const couponDiscount  = couponApplied?.discountAmount || 0
-  const DELIVERY_CHARGE = (total - couponDiscount) >= 999 ? 0 : 99
+  const DELIVERY_CHARGE = (total - couponDiscount) >= 2999 ? 0 : 99
   const orderTotal      = total + DELIVERY_CHARGE - couponDiscount
 
   const handleApplyCoupon = async () => {
@@ -428,7 +428,7 @@ export default function CheckoutPage() {
                 </div>
                 {DELIVERY_CHARGE > 0 && (
                   <p style={{ fontSize: 12, color: '#999', marginBottom: 16 }}>
-                    Add ₹{(999 - (total - couponDiscount)).toLocaleString('en-IN')} more for free delivery
+                    Add ₹{(2999 - (total - couponDiscount)).toLocaleString('en-IN')} more for free delivery
                   </p>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 16, fontWeight: 700, paddingTop: 12, borderTop: '1px solid #E8E8E8', marginBottom: 20 }}>
