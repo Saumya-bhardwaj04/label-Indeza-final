@@ -105,6 +105,7 @@ export async function getProducts(filter: {
   featured?: boolean
   inStock?: boolean
   limit?: number
+  sort?: string
 } = {}) {
   await connectDB()
   const query: Record<string, unknown> = {}
@@ -121,7 +122,16 @@ export async function getProducts(filter: {
     ]
   }
 
-  let q = Product.find(query).sort({ createdAt: -1 })
+  let sortOption: Record<string, number> = { createdAt: -1 }
+  if (filter.sort === 'price-asc') {
+    sortOption = { price: 1 }
+  } else if (filter.sort === 'price-desc') {
+    sortOption = { price: -1 }
+  } else if (filter.sort === 'suggested') {
+    sortOption = { featured: -1, createdAt: -1 }
+  }
+
+  let q = Product.find(query).sort(sortOption as any)
   if (filter.limit) q = q.limit(filter.limit)
   const docs = await q.lean()
   return docs.map((d) => mapProduct(d as Record<string, unknown>))

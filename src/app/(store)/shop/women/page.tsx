@@ -6,7 +6,7 @@ import { getProducts } from '@/lib/data'
 export default async function ShopWomen({
   searchParams,
 }: {
-  searchParams: Promise<{ category?: string; collection?: string; q?: string }>
+  searchParams: Promise<{ category?: string; collection?: string; q?: string; sort?: string }>
 }) {
   const params = await searchParams
   const products = await getProducts({
@@ -14,6 +14,7 @@ export default async function ShopWomen({
     category: params.category,
     collection: params.collection,
     q: params.q,
+    sort: params.sort,
   })
 
   return (

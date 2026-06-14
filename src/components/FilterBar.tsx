@@ -11,14 +11,30 @@ export default function FilterBar() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const active = searchParams.get('category') || 'all'
+  const activeSort = searchParams.get('sort') || 'suggested'
 
   const [isOpen, setIsOpen] = useState(false)
-  const [sortVal, setSortVal] = useState('Suggested')
+
+  const sortOptions = [
+    { label: 'Suggested', value: 'suggested' },
+    { label: 'Price: Low to High', value: 'price-asc' },
+    { label: 'Price: High to Low', value: 'price-desc' },
+    { label: 'Newest', value: 'newest' },
+  ]
+
+  const activeSortLabel = sortOptions.find(o => o.value === activeSort)?.label || 'Suggested'
 
   const handleFilter = (cat: string) => {
     const params = new URLSearchParams(searchParams.toString())
     if (cat === 'all') params.delete('category')
     else params.set('category', cat)
+    router.push(`${pathname}?${params.toString()}`)
+  }
+
+  const handleSort = (sortVal: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (sortVal === 'suggested') params.delete('sort')
+    else params.set('sort', sortVal)
     router.push(`${pathname}?${params.toString()}`)
   }
 
@@ -57,7 +73,7 @@ export default function FilterBar() {
             outline: 'none',
           }}
         >
-          <span>{sortVal}</span>
+          <span>{activeSortLabel}</span>
           <ChevronDown size={14} style={{ opacity: 0.6 }} />
         </button>
         {isOpen && (
@@ -81,25 +97,25 @@ export default function FilterBar() {
                 padding: '4px 0',
               }}
             >
-              {['Suggested', 'Price: Low to High', 'Price: High to Low', 'Newest'].map((opt) => (
+              {sortOptions.map((opt) => (
                 <div
-                  key={opt}
+                  key={opt.value}
                   onClick={() => {
-                    setSortVal(opt)
+                    handleSort(opt.value)
                     setIsOpen(false)
                   }}
                   style={{
                     padding: '8px 12px',
                     fontSize: '13px',
                     cursor: 'pointer',
-                    background: sortVal === opt ? '#F5F0EB' : 'transparent',
-                    color: sortVal === opt ? '#1A1A1A' : '#555',
-                    fontWeight: sortVal === opt ? 600 : 500,
+                    background: activeSort === opt.value ? '#F5F0EB' : 'transparent',
+                    color: activeSort === opt.value ? '#1A1A1A' : '#555',
+                    fontWeight: activeSort === opt.value ? 600 : 500,
                     textAlign: 'left',
                     whiteSpace: 'nowrap',
                   }}
                 >
-                  {opt}
+                  {opt.label}
                 </div>
               ))}
             </div>
